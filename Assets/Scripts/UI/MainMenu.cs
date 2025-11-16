@@ -3,7 +3,7 @@ using UnityEngine.SceneManagement;
 
 public class MainMenu : MonoBehaviour
 {
-    [SerializeField] string gameSceneName = "SampleScene"; // Oyun sahnenin adý
+    [SerializeField] string gameSceneName = "level1"; // Oyun sahnenin adý
 
     public void PlayGame()
     {
