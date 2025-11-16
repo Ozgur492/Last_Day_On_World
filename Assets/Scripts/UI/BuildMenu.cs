@@ -5,9 +5,9 @@ public class BuildMenu : MonoBehaviour
     public static BuildMenu Instance;
 
     public GameObject panel;             // BuildPanel
-    public GameObject[] towerPrefabs;    // Seçilebilecek kuleler
+    public GameObject[] towerPrefabs;    // Seï¿½ilebilecek kuleler
 
-    private BuildSpot currentSpot;       // Þu an týklanan slot
+    private BuildSpot currentSpot;       // ï¿½u an tï¿½klanan slot
 
     private void Awake()
     {
@@ -22,7 +22,7 @@ public class BuildMenu : MonoBehaviour
             panel.SetActive(false);
     }
 
-    // BuildSpot'tan çaðrýlýyor
+    // BuildSpot'tan ï¿½aï¿½rï¿½lï¿½yor
     public void Open(BuildSpot spot)
     {
         currentSpot = spot;
@@ -30,7 +30,7 @@ public class BuildMenu : MonoBehaviour
         if (panel != null)
         {
             panel.SetActive(true);
-            // Ýstersen mouse pozisyonuna taþý:
+            // ï¿½stersen mouse pozisyonuna taï¿½ï¿½:
         //    panel.transform.position = Input.mousePosition;
         }
     }
@@ -43,13 +43,18 @@ public class BuildMenu : MonoBehaviour
         currentSpot = null;
     }
 
-    // UI Button'lar burayý çaðýracak
+    // UI Button'lar burayï¿½ ï¿½aï¿½ï¿½racak
     public void BuildTower(int index)
     {
         if (currentSpot == null) return;
         if (towerPrefabs == null || index < 0 || index >= towerPrefabs.Length) return;
 
-        currentSpot.BuildTower(towerPrefabs[index]);
-        Close();
+        int cost = 100; // Sabit kule Ã¼creti
+
+        if (CoinManager.Instance.SpendCoins(cost))
+        {
+            currentSpot.BuildTower(towerPrefabs[index]);
+            Close();
+        }
     }
 }

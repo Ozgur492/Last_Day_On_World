@@ -22,7 +22,8 @@ public class Enemy : MonoBehaviour
 
     private void Die()
     {
-        // �stersen death animasyonu vs. ekleyebilirsin
+        // �stersen death animasyonu vs. ekleyebilirsin
+        CoinManager.Instance.AddCoins(20); //Sonra değiştirilir 
         Destroy(gameObject);
     }
 }
