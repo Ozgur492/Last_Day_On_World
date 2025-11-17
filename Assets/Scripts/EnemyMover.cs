@@ -2,57 +2,61 @@ using UnityEngine;
 
 public class EnemyMover : MonoBehaviour
 {
-    public Transform[] waypoints;   // Path içindeki noktalar
+    public Transform[] waypoints;
     public float speed = 3f;
-    public float reachThreshold = 0.1f;  // Noktaya yaklaþýldý saymak için
+    public float turnSpeed = 5f;
+    public float reachThreshold = 0.1f;
 
+    private Animator anim;
     private int currentIndex = 0;
 
     void Start()
     {
-        // Ýhtiyaten baþlangýçta ilk waypoint'e koy
+        anim = GetComponent<Animator>();
+
+        if (anim != null)
+        {
+            anim.SetFloat("SPEED", 0.5f);   // 0.5 = yürüyüþ, koþu eþiðinin altýnda
+        }
+
+
         if (waypoints != null && waypoints.Length > 0)
         {
             transform.position = waypoints[0].position;
-            currentIndex = 1; // sonraki noktaya git
+            currentIndex = 1;
         }
     }
 
     void Update()
     {
         if (waypoints == null || waypoints.Length == 0) return;
-        if (currentIndex >= waypoints.Length) return; // sona geldi
+        if (currentIndex >= waypoints.Length) return;
 
         Vector3 targetPos = waypoints[currentIndex].position;
-        Vector3 dir = (targetPos - transform.position).normalized;
+        Vector3 dir = (targetPos - transform.position);
+        Vector3 dirNorm = dir.normalized;
 
-        // hareket
-        transform.position += dir * speed * Time.deltaTime;
+        // ?? SPEED parametresi animatöre gider
+        anim.SetFloat("SPEED", dir.magnitude);
 
-        // hedefe yeterince yaklaþtý mý?
+        // ?? ROTASYON — zombi hedefe doðru döner
+        if (dirNorm != Vector3.zero)
+        {
+            Quaternion targetRot = Quaternion.LookRotation(dirNorm);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, turnSpeed * Time.deltaTime);
+        }
+
+        // ?? ÝLERLEME
+        transform.position += dirNorm * speed * Time.deltaTime;
+
+        // ?? Noktaya ulaþtý mý?
         if (Vector3.Distance(transform.position, targetPos) < reachThreshold)
         {
             currentIndex++;
 
-            // Bitiþe ulaþtýysa burada base'e damage verip yok edebilirsin
             if (currentIndex >= waypoints.Length)
             {
-                // TODO: Base health düþür
                 Destroy(gameObject);
-            }
-        }
-    }
-
-    // Editörde yolu görmek için (opsiyonel)
-    void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.red;
-        if (waypoints == null) return;
-        for (int i = 0; i < waypoints.Length - 1; i++)
-        {
-            if (waypoints[i] != null && waypoints[i + 1] != null)
-            {
-                Gizmos.DrawLine(waypoints[i].position, waypoints[i + 1].position);
             }
         }
     }

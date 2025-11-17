@@ -3,18 +3,31 @@ using UnityEngine;
 public class EnemySpawner : MonoBehaviour
 {
     public GameObject enemyPrefab;
-    public Transform[] pathWaypoints;  // Path içindeki tüm WP'ler
-    public float spawnInterval = 2f;   // kaç saniyede bir zombi gelecek
+    public Transform[] pathWaypoints;
 
+    public float startInterval = 3f;
+    public float minInterval = 0.8f;
+    public float difficultyRate = 0.95f;
+
+    private float currentInterval;
     private float timer;
+
+    void Start()
+    {
+        currentInterval = startInterval;
+    }
 
     void Update()
     {
         timer += Time.deltaTime;
-        if (timer >= spawnInterval)
+
+        if (timer >= currentInterval)
         {
             SpawnEnemy();
             timer = 0f;
+
+            // Zamanla hýzlanýr
+            currentInterval = Mathf.Max(minInterval, currentInterval * difficultyRate);
         }
     }
 
@@ -22,11 +35,9 @@ public class EnemySpawner : MonoBehaviour
     {
         if (enemyPrefab == null || pathWaypoints.Length == 0) return;
 
-        // Baþlangýç noktasý: ilk waypoint
         Vector3 spawnPos = pathWaypoints[0].position;
         GameObject enemy = Instantiate(enemyPrefab, spawnPos, Quaternion.identity);
 
-        // EnemyMover'a waypointleri ver
         EnemyMover mover = enemy.GetComponent<EnemyMover>();
         if (mover != null)
         {
