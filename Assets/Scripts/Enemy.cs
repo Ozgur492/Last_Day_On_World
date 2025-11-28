@@ -25,5 +25,6 @@ public class Enemy : MonoBehaviour
         // �stersen death animasyonu vs. ekleyebilirsin
         CoinManager.Instance.AddCoins(20); //Sonra değiştirilir 
         Destroy(gameObject);
+        
     }
 }
