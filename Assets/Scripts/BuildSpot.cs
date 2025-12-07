@@ -5,6 +5,9 @@ public class BuildSpot : MonoBehaviour
     public bool isOccupied = false;      // Bu slota kule dikildi mi?
     public Transform buildPoint;         // Kule tam nereye konacak?
 
+    //Kulelerin bakacaðý nokta onun için noktalar koycam
+    public Transform look_Target;
+
     private void Start()
     {
         // buildPoint yoksa, kendi pozisyonunu kullan
@@ -49,12 +52,35 @@ public class BuildSpot : MonoBehaviour
 
 
     // BuildMenu burayý çaðýracak
+    public float y_Rotation_Offset = 180f;//ayarlanacak yoksa doðru dönmüyor
+
     public void BuildTower(GameObject towerPrefab)
     {
         if (towerPrefab == null) return;
         if (isOccupied) return;
 
-        Instantiate(towerPrefab, buildPoint.position, Quaternion.identity);
+        GameObject tower = Instantiate(towerPrefab, buildPoint.position, Quaternion.identity);
+        
+        if(look_Target != null) {
+        
+        Vector3 dir = look_Target.position- tower.transform.position;
+         dir.y = 0f;//Y ekseni bozulmasýn
+
+            if(dir.sqrMagnitude > 0.001f)
+            {
+                Quaternion baseRot = Quaternion.LookRotation(dir);
+
+                // EKSEN FARKI ÝÇÝN Y OFFSET
+                // Silah +X'e bakýyorsa genelde -90 veya +90 derece gerekir
+                tower.transform.rotation = baseRot * Quaternion.Euler(0f, y_Rotation_Offset, 0f);
+            }
+
+
+        }
+        
+        
+        
+        
         isOccupied = true;
 
         var rend = GetComponent<Renderer>();

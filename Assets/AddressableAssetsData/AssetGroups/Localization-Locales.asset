@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Localization-Locales
   m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetGroup
   m_GroupName: Localization-Locales
-  m_GUID: e0d9fc8f31b1444838e8b456c95af637
+  m_GUID: a4c0803f39c87f6468dcdfeb882eddfb
   m_SerializeEntries:
   - m_GUID: 6f06d19caf47c4f408bad0890c17b7d3
     m_Address: Turkish (Turkey) (tr-TR)
@@ -28,7 +28,7 @@ MonoBehaviour:
     - Locale
     FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 1
-  m_Settings: {fileID: 11400000, guid: 8d27de67dfe0c4e87aa828a13c016627, type: 2}
+  m_Settings: {fileID: 11400000, guid: f72bce7ed0dd31b479407f3e94ff4bad, type: 2}
   m_SchemaSet:
     m_Schemas:
     - {fileID: 11400000, guid: 99b0a957b154c4a61aa46461a1b304b3, type: 2}

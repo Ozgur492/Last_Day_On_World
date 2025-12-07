@@ -10,20 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
-  m_Name: Localization-String-Tables-Turkish (Turkey) (tr-TR)
+  m_Name: Default Local Group
   m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetGroup
-  m_GroupName: Localization-String-Tables-Turkish (Turkey) (tr-TR)
-  m_GUID: b3fb593ca70f53b4983f4c0cab3c9189
-  m_SerializeEntries:
-  - m_GUID: dd7be07f232364a04886d77b29db9dff
-    m_Address: Tr_tr-TR
-    m_ReadOnly: 1
-    m_SerializedLabels:
-    - Locale-tr-TR
-    FlaggedDuringContentUpdateRestriction: 0
-  m_ReadOnly: 1
+  m_GroupName: Default Local Group
+  m_GUID: ef624dd88c154934e901630194da6ed0
+  m_SerializeEntries: []
+  m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: f72bce7ed0dd31b479407f3e94ff4bad, type: 2}
   m_SchemaSet:
     m_Schemas:
-    - {fileID: 11400000, guid: 352658c0e47a444e5b7b60adac02dedf, type: 2}
-    - {fileID: 11400000, guid: 46c57549c43f449d78d8683aded31405, type: 2}
+    - {fileID: 11400000, guid: 9c41daf868ed5a34093011680a09a47f, type: 2}
+    - {fileID: 11400000, guid: 2ac27ba00da81664da9b93fb94f17d4e, type: 2}

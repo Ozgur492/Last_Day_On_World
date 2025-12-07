@@ -3,6 +3,9 @@ using UnityEngine.InputSystem;
 using System.Collections;
 using UnityEngine.UI;
 using TMPro;
+using NUnit.Framework;
+using System.Collections.Generic;
+
 public class EnemySpawner : MonoBehaviour
 {
     public GameObject enemyPrefab;
@@ -29,6 +32,7 @@ public class EnemySpawner : MonoBehaviour
     private float timer;
 
 
+    /*
     [Header("Wave Settings")]
     public float spawnDelayBetweenEnemies = 0.3f; // Aynı dalgadaki düşmanlar arası süre
     public int first_wave_number_of_enemy = 10;
@@ -37,6 +41,22 @@ public class EnemySpawner : MonoBehaviour
 
     private int currentWave = 0;
     private bool isSpawning = false;
+    */
+    [Header("Wave Settings")]
+    public List<Wave> waves = new List<Wave>();
+
+    private int currentWave = -1;//-1 olmassa ilerden başlıyor
+    private bool isSpawning = false;
+
+    [System.Serializable] //bu görünebilmesi için inspectorda
+    public class Wave
+    {
+        public int enemy_Count;
+        public float delay_Between_Enemies;
+
+    }
+
+
 
     void Awake()
     {
@@ -102,6 +122,20 @@ void Update()
 
         currentWave++;
 
+        //waveler bitince döner
+        if (currentWave >= waves.Count)
+        {
+            //buraya ekleme gelicek waveler bitince bölüm bitti diye
+            Debug.Log("Tüm wave ler tamamlandı");
+            return;
+
+        }
+        // waves sınıfının içindeki waveleri nesneye atma işi burası
+        Wave wave = waves[currentWave];
+
+        StartCoroutine(SpawnWaveRoutine(wave.enemy_Count,wave.delay_Between_Enemies));
+
+        /*  eski sistem
         switch (currentWave)
         {
             case 1:
@@ -124,9 +158,9 @@ void Update()
                 break;
         }
     }
-
-
-
+ 
+        */
+    }
 
 
 
@@ -144,7 +178,7 @@ void Update()
         StartCoroutine(SpawnWaveRoutine());
     }
     */
-    private IEnumerator SpawnWaveRoutine(int count)
+    private IEnumerator SpawnWaveRoutine(int count,float spawnDelayBetweenEnemies)
     {
         if (enemyPrefab == null)
         {
@@ -160,14 +194,16 @@ void Update()
 
         isSpawning = true;
 
+
         for (int i = 0; i < count; i++)
         {
-            SpawnEnemy();
+            SpawnEnemy(); 
             yield return new WaitForSeconds(spawnDelayBetweenEnemies);
         }
 
         isSpawning = false;
 
+        //Burada wave arası ekler Burası değişecek düşmanlar bitince yeni wave olması gerek
         yield return new WaitForSeconds(5.0f);
 
         // Wave bitti → UI göster
