@@ -10,6 +10,7 @@ public class EnemySpawner : MonoBehaviour
 {
     public GameObject enemyPrefab;
     public Transform[] pathWaypoints;
+    public GameObject bossPrefab;
 
     [Header("Timed Spawning")]
     public bool useTimedSpawn = false;
@@ -53,7 +54,7 @@ public class EnemySpawner : MonoBehaviour
     {
         public int enemy_Count;
         public float delay_Between_Enemies;
-
+        public bool hasBoss;
     }
 
 
@@ -200,7 +201,30 @@ void Update()
             SpawnEnemy(); 
             yield return new WaitForSeconds(spawnDelayBetweenEnemies);
         }
+        
+        
+ 
+         /*//BOSS İCİN, DÜZENLENECEK
+        // 3. ve 4. wave’de boss spawn
+        if ((currentWave == 2 || currentWave == 3) && bossPrefab != null)
+        {
+            GameObject boss = Instantiate(bossPrefab, pathWaypoints[0].position, Quaternion.identity);
+            EnemyMover mover = boss.GetComponent<EnemyMover>();
+            if (mover != null)
+            {
+                mover.waypoints = pathWaypoints;
+                mover.isBoss = true;
+                mover.spawnYOffset = 1.3f;
+                mover.bossSpeed = 0.55f;
+                mover.bossTurnSpeed = 12f;
+            }
 
+            Enemy enemyComp = boss.GetComponent<Enemy>();
+            if (enemyComp != null)
+                enemyComp.maxHealth = 1000f;
+        }*/
+        
+        
         isSpawning = false;
 
         //Burada wave arası ekler Burası değişecek düşmanlar bitince yeni wave olması gerek

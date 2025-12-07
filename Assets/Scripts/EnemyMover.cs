@@ -1,3 +1,7 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
 using UnityEngine;
 
 public class EnemyMover : MonoBehaviour
@@ -7,57 +11,102 @@ public class EnemyMover : MonoBehaviour
     public float turnSpeed = 5f;
     public float reachThreshold = 0.1f;
 
+    [Header("Offset")]
+    public float spawnYOffset = 0f;
+
+    [Header("Boss Settings")]
+    public bool isBoss = false;
+    public float bossSpeed = 0.55f;
+    public float bossTurnSpeed = 12f;
+
     private Animator anim;
     private int currentIndex = 0;
 
     void Start()
     {
         anim = GetComponent<Animator>();
-
         if (anim != null)
-        {
-            anim.SetFloat("SPEED", 0.5f);   // 0.5 = yürüyüþ, koþu eþiðinin altýnda
-        }
-
+            anim.SetFloat("SPEED", 0.5f);
 
         if (waypoints != null && waypoints.Length > 0)
         {
-            transform.position = waypoints[0].position;
+            Vector3 spawnPos = waypoints[0].position;
+            spawnPos.y += spawnYOffset;
+            transform.position = spawnPos;
             currentIndex = 1;
+        }
+
+        // EÄŸer boss ise ayrÄ± hareket baÅŸlat
+        if (isBoss)
+        {
+            StartCoroutine(BossMove());
         }
     }
 
     void Update()
     {
-        if (waypoints == null || waypoints.Length == 0) return;
-        if (currentIndex >= waypoints.Length) return;
+        // Normal zombiler normal hareketi Update iÃ§inde yapacak
+        if (isBoss) return; // Boss kendi coroutineâ€™inde hareket edecek
+
+        if (waypoints == null || currentIndex >= waypoints.Length) return;
 
         Vector3 targetPos = waypoints[currentIndex].position;
-        Vector3 dir = (targetPos - transform.position);
+        float fixedY = waypoints[0].position.y + spawnYOffset;
+        targetPos.y = fixedY;
+
+        Vector3 dir = targetPos - transform.position;
+        dir.y = 0;
         Vector3 dirNorm = dir.normalized;
 
-        // ?? SPEED parametresi animatöre gider
-        anim.SetFloat("SPEED", dir.magnitude);
+        if (anim != null)
+            anim.SetFloat("SPEED", dir.magnitude);
 
-        // ?? ROTASYON — zombi hedefe doðru döner
         if (dirNorm != Vector3.zero)
         {
             Quaternion targetRot = Quaternion.LookRotation(dirNorm);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, turnSpeed * Time.deltaTime);
         }
 
-        // ?? ÝLERLEME
         transform.position += dirNorm * speed * Time.deltaTime;
+        transform.position = new Vector3(transform.position.x, fixedY, transform.position.z);
 
-        // ?? Noktaya ulaþtý mý?
         if (Vector3.Distance(transform.position, targetPos) < reachThreshold)
-        {
             currentIndex++;
+    }
 
-            if (currentIndex >= waypoints.Length)
+    // ===========================================
+    // Boss iÃ§in ayrÄ± coroutine
+    // ===========================================
+    private IEnumerator BossMove()
+    {
+        currentIndex = 1; // Spawn pos sonrasÄ±
+        while (currentIndex < waypoints.Length)
+        {
+            Vector3 targetPos = waypoints[currentIndex].position;
+            float fixedY = waypoints[0].position.y + spawnYOffset;
+            targetPos.y = fixedY;
+
+            Vector3 dir = targetPos - transform.position;
+            dir.y = 0;
+            Vector3 dirNorm = dir.normalized;
+
+            if (dirNorm != Vector3.zero)
             {
-                Destroy(gameObject);
+                Quaternion targetRot = Quaternion.LookRotation(dirNorm);
+                transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRot, bossTurnSpeed * Time.deltaTime);
             }
+
+            transform.position += dirNorm * bossSpeed * Time.deltaTime;
+            transform.position = new Vector3(transform.position.x, fixedY, transform.position.z);
+
+            if (Vector3.Distance(transform.position, targetPos) < reachThreshold)
+                currentIndex++;
+
+            yield return null;
         }
+
+        // Boss yolu bitince destroy
+        Destroy(gameObject);
     }
 }
+
